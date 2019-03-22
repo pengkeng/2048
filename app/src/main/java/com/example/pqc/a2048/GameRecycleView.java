@@ -18,6 +18,7 @@ public class GameRecycleView extends RecyclerView {
     private Context mContext;
     private GridLayoutManager mLayoutManager;
     private CardAdapter mCardAdapter;
+    private SlideListener mSlideListener;
 
     public GameRecycleView(@NonNull Context context) {
         this(context, null);
@@ -78,12 +79,17 @@ public class GameRecycleView extends RecyclerView {
 
     private void init() {
         setLayoutManager(mLayoutManager);
-        addItemDecoration(new SpaceItemDecoration(4));
+      //  addItemDecoration(new SpaceItemDecoration(4));
         setBackgroundColor(Color.parseColor("#C5C1AA"));
     }
 
     public void setCardAdapter(CardAdapter adapter) {
         mCardAdapter = adapter;
         setAdapter(mCardAdapter);
+    }
+
+
+    public void setSlideListener(SlideListener listener){
+        mSlideListener = listener;
     }
 }

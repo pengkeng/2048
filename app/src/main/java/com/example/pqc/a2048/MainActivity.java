@@ -4,15 +4,23 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton mBackView, mMusicView;
     public static String MONEY = "MONEY";
     private boolean isShowWinDialog = false;
+    private RelativeLayout mContainer;
+    private ArrayList mTextList = new ArrayList<TextView>();
     //构建手势探测器
 
     @Override
@@ -73,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < 25; i++) {
             CardBean bean = new CardBean();
             bean.setIndex(i);
-            if(i == 0){
+            if (i == 0) {
                 bean.setNumber(2);
             }
             mList.add(bean);
@@ -86,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBackView = findViewById(R.id.back_iv);
         mMusicView = findViewById(R.id.music_iv);
         mRecycleView = findViewById(R.id.recycleView);
+        mContainer = findViewById(R.id.container);
         mRecycleView.setGrid(5);
         mAdapter = new CardAdapter();
         mAdapter.setList(mList);
@@ -97,6 +108,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences sharedPreferences = getSharedPreferences("cache", 0);
         int money = sharedPreferences.getInt(MONEY, 0);
         mMoneyView.setText("金币: " + money);
+        mAdapter.setSlideListener(new SlideListener() {
+            @Override
+            public void translate(int fromX, int toX, int fromY, int toY, String num) {
+                final TextView textView = new TextView(getApplicationContext());
+                mTextList.add(textView);
+                textView.setBackground(getResources().getDrawable(R.drawable.text_round_border_full));
+                textView.setTextColor(Color.parseColor("#111111"));
+                textView.setTypeface(Typeface.MONOSPACE);
+                if (!"0".equals(num)) {
+                    textView.setText(num);
+                } else {
+                    textView.setText("");
+                }
+                textView.setTextSize(20);
+                textView.setGravity(Gravity.CENTER);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.width = DpUtils.dip2px(50);
+                params.height = DpUtils.dip2px(50);
+                params.leftMargin = DpUtils.dip2px(10 + 60 * fromX);
+                params.topMargin = DpUtils.dip2px(10 + 60 * fromY);
+                textView.setLayoutParams(params);
+                mContainer.addView(textView);
+                TranslateAnimation translateAnimation = new TranslateAnimation(0, DpUtils.dip2px(60 * (toX - fromX)), 0, DpUtils.dip2px(60 * (toY - fromY)));
+                translateAnimation.setDuration(200);
+                translateAnimation.setFillAfter(true);
+                textView.startAnimation(translateAnimation);
+                translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mContainer.removeView(textView);
+                     //   mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+            }
+        });
     }
 
     @Override

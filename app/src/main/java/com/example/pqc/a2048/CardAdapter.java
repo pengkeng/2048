@@ -1,6 +1,7 @@
 package com.example.pqc.a2048;
 
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,10 +15,12 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.LogRecord;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
 
     private ArrayList<CardBean> mList = new ArrayList<>();
+    private SlideListener mSlideListener;
 
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -42,173 +45,66 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
     }
 
     public void move(int state) {
-
         int level = (int) Math.sqrt(mList.size());
         switch (state) {
             case 1:
                 for (int i = 0; i < level; i++) {
                     for (int j = 1; j < level; j++) {
-                        int target = j * level + i;
-                        for (int k = 0; k < j; k++) {
-                            int index = k * level + i;
-                            if (mList.get(index).getNumber() == 0) {
-                                mList.get(index).setNumber(mList.get(target).getNumber());
-                                mList.get(target).setNumber(0);
-                            }
+                        int myIndex = j * level + i;
+                        if (mList.get(myIndex).getNumber() == 0) {
+                            continue;
                         }
-                    }
-                    for (int j = 1; j < level; j++) {
-                        int target = (j - 1) * level + i;
-                        int index = j * level + i;
-                        if (mList.get(target).getNumber() == mList.get(index).getNumber()) {
-                            mList.get(target).setNumber(mList.get(target).getNumber() * 2);
+                        int target = myIndex;
+                        int toY = 0;
+                        for (int k = j - 1; k >= 0; k--) {
+                            target = k * level + i;
+                            toY = k;
                             if (mList.get(target).getNumber() != 0) {
-                                mList.get(target).setAnim(true);
-                                mList.get(index).setNumber(0);
+                                break;
                             }
                         }
-                    }
-                    for (int j = 1; j < level; j++) {
-                        int target = j * level + i;
-                        for (int k = 0; k < j; k++) {
-                            int index = k * level + i;
-                            if (mList.get(index).getNumber() == 0) {
-                                mList.get(index).setNumber(mList.get(target).getNumber());
-                                mList.get(target).setNumber(0);
-                                if (mList.get(target).isAnim()) {
-                                    mList.get(target).setAnim(false);
-                                    mList.get(index).setAnim(true);
-                                }
+                        if (mList.get(target).getNumber() == 0) {
+                            mSlideListener.translate(i, i, j, toY, mList.get(myIndex).getNumber() + "");
+                            mList.get(target).setNumber(mList.get(myIndex).getNumber());
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                        } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
+                            mSlideListener.translate(i, i, j, toY, mList.get(myIndex).getNumber() + "");
+                            mList.get(target).setNumber(mList.get(myIndex).getNumber() * 2);
+                            mList.get(target).setAnim(true);
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                        } else {
+                            if (j == toY + 1) {
+                                continue;
                             }
+                            mSlideListener.translate(i, i, j, toY + 1, mList.get(myIndex).getNumber() + "");
+                            mList.get(target + level).setNumber(mList.get(myIndex).getNumber());
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
                         }
                     }
                 }
                 break;
             case 2:
-                for (int i = 0; i < level; i++) {
-                    for (int j = level - 2; j >= 0; j--) {
-                        int target = j * level + i;
-                        for (int k = level - 1; k > j; k--) {
-                            int index = k * level + i;
-                            if (mList.get(index).getNumber() == 0) {
-                                mList.get(index).setNumber(mList.get(target).getNumber());
-                                mList.get(target).setNumber(0);
-                            }
-                        }
-                    }
-                    for (int j = level - 2; j >= 0; j--) {
-                        int target = (j + 1) * level + i;
-                        int index = j * level + i;
-                        if (mList.get(target).getNumber() == mList.get(index).getNumber()) {
-                            mList.get(target).setNumber(mList.get(target).getNumber() * 2);
-                            mList.get(index).setNumber(0);
-                            if (mList.get(target).getNumber() != 0) {
-                                mList.get(target).setAnim(true);
-                                mList.get(index).setNumber(0);
-                            }
-                        }
-                    }
-                    for (int j = level - 2; j >= 0; j--) {
-                        int target = j * level + i;
-                        for (int k = level - 1; k > j; k--) {
-                            int index = k * level + i;
-                            if (mList.get(index).getNumber() == 0) {
-                                mList.get(index).setNumber(mList.get(target).getNumber());
-                                mList.get(target).setNumber(0);
-                                if (mList.get(target).isAnim()) {
-                                    mList.get(target).setAnim(false);
-                                    mList.get(index).setAnim(true);
-                                }
-                            }
-                        }
-                    }
-                }
+
                 break;
             case 3:
-                for (int i = 0; i < mList.size(); i += level) {
-                    for (int j = i + 1; j < i + level; j++) {
-                        int target = j;
-                        for (int k = i; k < j; k++) {
-                            int index = k;
-                            if (mList.get(index).getNumber() == 0) {
-                                mList.get(index).setNumber(mList.get(target).getNumber());
-                                mList.get(target).setNumber(0);
-                            }
-                        }
-                    }
-                    for (int j = i + 1; j < i + level; j++) {
-                        int target = j - 1;
-                        int index = j;
-                        if (mList.get(target).getNumber() == mList.get(index).getNumber()) {
-                            mList.get(target).setNumber(mList.get(target).getNumber() * 2);
-                            mList.get(index).setNumber(0);
-                            if (mList.get(target).getNumber() != 0) {
-                                mList.get(target).setAnim(true);
-                                mList.get(index).setNumber(0);
-                            }
-                        }
-                    }
-                    for (int j = i + 1; j < i + level; j++) {
-                        int target = j;
-                        for (int k = i; k < j; k++) {
-                            int index = k;
-                            if (mList.get(index).getNumber() == 0) {
-                                mList.get(index).setNumber(mList.get(target).getNumber());
-                                mList.get(target).setNumber(0);
-                                if (mList.get(target).isAnim()) {
-                                    mList.get(target).setAnim(false);
-                                    mList.get(index).setAnim(true);
-                                }
-                            }
-                        }
-                    }
-                }
+
                 break;
             case 4:
-                for (int i = 0; i < mList.size(); i += level) {
-                    for (int j = i + level - 2; j >= i; j--) {
-                        int target = j;
-                        for (int k = i + level - 1; k > j; k--) {
-                            int index = k;
-                            if (mList.get(index).getNumber() == 0) {
-                                mList.get(index).setNumber(mList.get(target).getNumber());
-                                mList.get(target).setNumber(0);
-                            }
-                        }
-                    }
-                    for (int j = i + level - 2; j >= i; j--) {
-                        int target = j + 1;
-                        int index = j;
-                        if (mList.get(target).getNumber() == mList.get(index).getNumber()) {
-                            mList.get(target).setNumber(mList.get(target).getNumber() * 2);
-                            mList.get(index).setNumber(0);
-                            if (mList.get(target).getNumber() != 0) {
-                                mList.get(target).setAnim(true);
-                                mList.get(index).setNumber(0);
-                            }
-                        }
-                    }
-                    for (int j = i + level - 2; j >= i; j--) {
-                        int target = j;
-                        for (int k = i + level - 1; k > j; k--) {
-                            int index = k;
-                            if (mList.get(index).getNumber() == 0) {
-                                mList.get(index).setNumber(mList.get(target).getNumber());
-                                mList.get(target).setNumber(0);
-                                if (mList.get(target).isAnim()) {
-                                    mList.get(target).setAnim(false);
-                                    mList.get(index).setAnim(true);
-                                }
-                            }
-                        }
-                    }
-                }
+
                 break;
         }
         sendScore();
         addCard();
         judgeGame();
-        notifyDataSetChanged();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        },200);
     }
 
     private void sendScore() {
@@ -268,6 +164,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                 if (index < mList.size() && mList.get(index).getNumber() == 0) {
                     mList.get(index).setNumber(2);
                     mList.get(index).setAdd(true);
+                    notifyItemChanged(index);
                     break;
                 }
             }
@@ -301,5 +198,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
             }
 
         }
+    }
+
+    public void setSlideListener(SlideListener listener) {
+        mSlideListener = listener;
     }
 }
