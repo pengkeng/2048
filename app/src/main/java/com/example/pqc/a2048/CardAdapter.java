@@ -64,36 +64,158 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                             }
                         }
                         if (mList.get(target).getNumber() == 0) {
-                            mSlideListener.translate(i, i, j, toY, mList.get(myIndex).getNumber() + "");
-                            mList.get(target).setNumber(mList.get(myIndex).getNumber());
+                            int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
                             notifyItemChanged(myIndex);
+                            mSlideListener.translate(i, i, j, toY, number + "");
+                            mList.get(target).setNumber(number);
                         } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
-                            mSlideListener.translate(i, i, j, toY, mList.get(myIndex).getNumber() + "");
-                            mList.get(target).setNumber(mList.get(myIndex).getNumber() * 2);
-                            mList.get(target).setAnim(true);
+                            int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
                             notifyItemChanged(myIndex);
+                            mSlideListener.translate(i, i, j, toY, number + "");
+                            mList.get(target).setNumber(number * 2);
+                            mList.get(target).setAnim(true);
                         } else {
                             if (j == toY + 1) {
                                 continue;
                             }
-                            mSlideListener.translate(i, i, j, toY + 1, mList.get(myIndex).getNumber() + "");
-                            mList.get(target + level).setNumber(mList.get(myIndex).getNumber());
+                            int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
                             notifyItemChanged(myIndex);
+                            mSlideListener.translate(i, i, j, toY + 1, number + "");
+                            mList.get(target + level).setNumber(number);
                         }
                     }
                 }
                 break;
             case 2:
-
+                for (int i = 0; i < level; i++) {
+                    for (int j = level - 2; j >= 0; j--) {
+                        int myIndex = j * level + i;
+                        if (mList.get(myIndex).getNumber() == 0) {
+                            continue;
+                        }
+                        int target = myIndex;
+                        int toY = level - 1;
+                        for (int k = j + 1; k <= level - 1; k++) {
+                            target = k * level + i;
+                            toY = k;
+                            if (mList.get(target).getNumber() != 0) {
+                                break;
+                            }
+                        }
+                        if (mList.get(target).getNumber() == 0) {
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(i, i, j, toY, number + "");
+                            mList.get(target).setNumber(number);
+                        } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(i, i, j, toY, number + "");
+                            mList.get(target).setNumber(number * 2);
+                            mList.get(target).setAnim(true);
+                        } else {
+                            if (j == toY - 1) {
+                                continue;
+                            }
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(i, i, j, toY - 1, number + "");
+                            mList.get(target - level).setNumber(number);
+                        }
+                    }
+                }
                 break;
             case 3:
+                for (int i = 0; i < level; i++) {
+                    for (int j = 1; j < level; j++) {
+                        int myIndex = i * level + j;
+                        if (mList.get(myIndex).getNumber() == 0) {
+                            continue;
+                        }
+                        int target = myIndex;
+                        int toX = 0;
+                        for (int k = j - 1; k >= 0; k--) {
+                            target = i * level + k;
+                            toX = k;
+                            if (mList.get(target).getNumber() != 0) {
+                                break;
+                            }
+                        }
+                        if (mList.get(target).getNumber() == 0) {
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(j, toX, i, i, number + "");
+                            mList.get(target).setNumber(number);
+                        } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(j, toX, i, i, number + "");
+                            mList.get(target).setNumber(number * 2);
+                            mList.get(target).setAnim(true);
 
+                        } else {
+                            if (j == toX + 1) {
+                                continue;
+                            }
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(j, toX + 1, i, i, number + "");
+                            mList.get(target + 1).setNumber(number);
+
+                        }
+                    }
+                }
                 break;
             case 4:
-
+                for (int i = 0; i < level; i++) {
+                    for (int j = level - 2; j >= 0; j--) {
+                        int myIndex = i * level + j;
+                        if (mList.get(myIndex).getNumber() == 0) {
+                            continue;
+                        }
+                        int target = myIndex;
+                        int toX = 0;
+                        for (int k = j + 1; k < level; k++) {
+                            target = i * level + k;
+                            toX = k;
+                            if (mList.get(target).getNumber() != 0) {
+                                break;
+                            }
+                        }
+                        if (mList.get(target).getNumber() == 0) {
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(j, toX, i, i, number + "");
+                            mList.get(target).setNumber(number);
+                        } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(j, toX, i, i, number + "");
+                            mList.get(target).setNumber(number * 2);
+                            mList.get(target).setAnim(true);
+                        } else {
+                            if (j == toX - 1) {
+                                continue;
+                            }
+                            int number = mList.get(myIndex).getNumber();
+                            mList.get(myIndex).setNumber(0);
+                            notifyItemChanged(myIndex);
+                            mSlideListener.translate(j, toX - 1, i, i, number + "");
+                            mList.get(target - 1).setNumber(number);
+                        }
+                    }
+                }
                 break;
         }
         sendScore();
@@ -104,7 +226,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
             public void run() {
                 notifyDataSetChanged();
             }
-        },200);
+        }, 200);
     }
 
     private void sendScore() {
