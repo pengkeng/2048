@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="心中小鹿已经苍老\n遇见一个心动的人它就叼着烟\n问我:\n“就这样?不撞不撞。”但是最终会有一天它掐灭了烟\n叹口气跟我说\n“看好咯\n最后撞一一 次，就这个\n了啊。”"
+        android:text="心中小鹿已经苍老\n遇见一个心动的人它就叼着烟\n问我:\n“就这样?不撞不撞。”但是最终会有一天它掐灭了烟\n叹口气跟我说\n“看好咯\n最后撞一次，就这个\n了啊。”"
         android:textColor="#FCFCFC"
         android:textSize="15dp"
         android:typeface="sans" />
