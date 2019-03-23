@@ -1,4 +1,4 @@
-package com.example.pqc.a2048;
+package com.example.pqc.a2048.beans;
 
 public class CardBean {
 
@@ -6,6 +6,7 @@ public class CardBean {
     private int number = 0;
     private boolean isAnim = false;
     private boolean isAdd = false;
+    private boolean changeTwice = false;
 
     public int getNumber() {
         return number;
@@ -37,5 +38,13 @@ public class CardBean {
 
     public void setAdd(boolean add) {
         isAdd = add;
+    }
+
+    public boolean isChangeTwice() {
+        return changeTwice;
+    }
+
+    public void setChangeTwice(boolean changeTwice) {
+        this.changeTwice = changeTwice;
     }
 }

@@ -1,26 +1,28 @@
-package com.example.pqc.a2048;
+package com.example.pqc.a2048.adapter;
 
-import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import com.example.pqc.a2048.GameEvents;
+import com.example.pqc.a2048.SlideListener;
+import com.example.pqc.a2048.beans.CardBean;
+import com.example.pqc.a2048.beans.ScoreEvents;
+import com.example.pqc.a2048.view.CardView;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.logging.LogRecord;
 
-public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
+public class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<CardBean> mList = new ArrayList<>();
     private SlideListener mSlideListener;
+    private ArrayList<Integer> preList = new ArrayList<>();
+    private long preTime = 0;
 
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -29,9 +31,23 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
-        MyHolder holder = (MyHolder) myHolder;
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        MyHolder holder = (MyHolder) viewHolder;
+        Log.e("111111--->>>", "onBindViewHolder: i:" + i);
         holder.setData();
+    }
+
+//    @Override
+//    public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
+//        MyHolder holder = (MyHolder) myHolder;
+//        Log.e("111111--->>>", "onBindViewHolder: i:" + i);
+//        holder.setData();
+//    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position, @NonNull List<Object> payloads) {
+        onBindViewHolder(viewHolder, position);
+        Log.e("111111--->>>", "onBindViewHolder: payloads" + payloads.size());
     }
 
     @Override
@@ -42,10 +58,23 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
     public void setList(ArrayList<CardBean> list) {
         mList.clear();
         mList.addAll(list);
+        for (int i = 0; i < mList.size(); i++) {
+            preList.add(0);
+        }
     }
 
     public void move(int state) {
+
+        //防止快速点击
+        if (System.currentTimeMillis() - preTime < 500) {
+            return;
+        }
+        preTime = System.currentTimeMillis();
         int level = (int) Math.sqrt(mList.size());
+        preList.clear();
+        for (int i = 0; i < mList.size(); i++) {
+            preList.add(mList.get(i).getNumber());
+        }
         switch (state) {
             case 1:
                 for (int i = 0; i < level; i++) {
@@ -66,13 +95,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                         if (mList.get(target).getNumber() == 0) {
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(i, i, j, toY, number + "");
                             mList.get(target).setNumber(number);
                         } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(i, i, j, toY, number + "");
                             mList.get(target).setNumber(number * 2);
                             mList.get(target).setAnim(true);
@@ -82,7 +111,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                             }
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(i, i, j, toY + 1, number + "");
                             mList.get(target + level).setNumber(number);
                         }
@@ -108,13 +137,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                         if (mList.get(target).getNumber() == 0) {
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(i, i, j, toY, number + "");
                             mList.get(target).setNumber(number);
                         } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(i, i, j, toY, number + "");
                             mList.get(target).setNumber(number * 2);
                             mList.get(target).setAnim(true);
@@ -124,7 +153,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                             }
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(i, i, j, toY - 1, number + "");
                             mList.get(target - level).setNumber(number);
                         }
@@ -150,13 +179,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                         if (mList.get(target).getNumber() == 0) {
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(j, toX, i, i, number + "");
                             mList.get(target).setNumber(number);
                         } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(j, toX, i, i, number + "");
                             mList.get(target).setNumber(number * 2);
                             mList.get(target).setAnim(true);
@@ -167,7 +196,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                             }
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(j, toX + 1, i, i, number + "");
                             mList.get(target + 1).setNumber(number);
 
@@ -194,13 +223,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                         if (mList.get(target).getNumber() == 0) {
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(j, toX, i, i, number + "");
                             mList.get(target).setNumber(number);
                         } else if (mList.get(myIndex).getNumber() == mList.get(target).getNumber()) {
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(j, toX, i, i, number + "");
                             mList.get(target).setNumber(number * 2);
                             mList.get(target).setAnim(true);
@@ -210,7 +239,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
                             }
                             int number = mList.get(myIndex).getNumber();
                             mList.get(myIndex).setNumber(0);
-                            notifyItemChanged(myIndex);
+                            mList.get(myIndex).setChangeTwice(true);
                             mSlideListener.translate(j, toX - 1, i, i, number + "");
                             mList.get(target - 1).setNumber(number);
                         }
@@ -221,12 +250,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
         sendScore();
         addCard();
         judgeGame();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        }, 200);
+        notifyItemRangeChanged(0, mList.size());
     }
 
     private void sendScore() {
@@ -260,10 +284,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyHolder> {
             if (mList.get(getAdapterPosition()).isAdd()) {
                 cardView.addCard();
             } else {
-                cardView.setNum(mList.get(getAdapterPosition()).getNumber(), mList.get(getAdapterPosition()).isAnim());
+                cardView.setNum(mList.get(getAdapterPosition()).getNumber(), mList.get(getAdapterPosition()).isAnim(), preList.get(getAdapterPosition()), mList.get(getAdapterPosition()).isChangeTwice());
             }
             mList.get(getAdapterPosition()).setAdd(false);
             mList.get(getAdapterPosition()).setAnim(false);
+            mList.get(getAdapterPosition()).setChangeTwice(false);
         }
     }
 

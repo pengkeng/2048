@@ -1,4 +1,4 @@
-package com.example.pqc.a2048;
+package com.example.pqc.a2048.beans;
 
 public class ScoreEvents {
 

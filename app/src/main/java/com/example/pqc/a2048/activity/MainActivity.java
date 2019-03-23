@@ -1,4 +1,4 @@
-package com.example.pqc.a2048;
+package com.example.pqc.a2048.activity;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -7,22 +7,27 @@ import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.GestureDetector;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.pqc.a2048.adapter.CardAdapter;
+import com.example.pqc.a2048.beans.CardBean;
+import com.example.pqc.a2048.utils.DpUtils;
+import com.example.pqc.a2048.GameEvents;
+import com.example.pqc.a2048.view.GameRecycleView;
+import com.example.pqc.a2048.dialog.MyDialog;
+import com.example.pqc.a2048.R;
+import com.example.pqc.a2048.beans.ScoreEvents;
+import com.example.pqc.a2048.SlideListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -101,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter = new CardAdapter();
         mAdapter.setList(mList);
         mRecycleView.setCardAdapter(mAdapter);
+        ((DefaultItemAnimator)mRecycleView.getItemAnimator()).setSupportsChangeAnimations(false);
         mScoreView.setOnClickListener(this);
         mMoneyView.setOnClickListener(this);
         mBackView.setOnClickListener(this);
@@ -131,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textView.setLayoutParams(params);
                 mContainer.addView(textView);
                 TranslateAnimation translateAnimation = new TranslateAnimation(0, DpUtils.dip2px(60 * (toX - fromX)), 0, DpUtils.dip2px(60 * (toY - fromY)));
-                translateAnimation.setDuration(200);
+                translateAnimation.setDuration(500);
                 translateAnimation.setFillAfter(true);
                 textView.startAnimation(translateAnimation);
                 translateAnimation.setAnimationListener(new Animation.AnimationListener() {

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <ImageButton
         android:id="@+id/music_iv"
@@ -55,7 +55,7 @@
 
     </LinearLayout>
 
-    <com.example.pqc.a2048.GameRecycleView
+    <com.example.pqc.a2048.view.GameRecycleView
         android:id="@+id/recycleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         android:padding="5dp"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:overScrollMode="never"></com.example.pqc.a2048.GameRecycleView>
+        android:overScrollMode="never"></com.example.pqc.a2048.view.GameRecycleView>
 
     <RelativeLayout
         android:id="@+id/container"

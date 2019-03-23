@@ -1,10 +1,12 @@
-package com.example.pqc.a2048;
+package com.example.pqc.a2048.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.pqc.a2048.R;
 
 public class StartActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.pqc.a2048;
+package com.example.pqc.a2048.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.pqc.a2048.R;
 
 public class MyDialog extends Dialog {
     private Context mContext;

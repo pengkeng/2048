@@ -1,4 +1,4 @@
-package com.example.pqc.a2048;
+package com.example.pqc.a2048.utils;
 
 import android.content.res.Resources;
 
