@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#668B8B"
+    tools:context=".activity.MainActivity">
+
+    <ImageButton
+        android:id="@+id/music_iv"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/music" />
+
+    <ImageButton
+        android:id="@+id/back_iv"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/back" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/score_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="得分:"
+            android:textColor="#EED8AE"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/money_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="金币:"
+            android:textColor="#EED8AE"
+            android:textSize="25dp" />
+
+    </LinearLayout>
+
+    <com.example.pqc.a2048.view.GameRecycleView
+        android:id="@+id/recycleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:padding="5dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:overScrollMode="never"></com.example.pqc.a2048.view.GameRecycleView>
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="310dp"
+        android:layout_height="310dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"></RelativeLayout>
+
+</RelativeLayout>
